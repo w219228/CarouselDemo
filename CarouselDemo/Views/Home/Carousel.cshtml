@@ -1,0 +1,63 @@
+﻿@section Styles
+{
+	<link href="~/lib/owlcarousel2/assets/owl.carousel.min.css" rel="stylesheet" />
+	<link href="~/lib/owlcarousel2/assets/owl.theme.default.min.css" rel="stylesheet" />
+	<style>
+		.home-demo .item{background:cross-fade()}
+		.home-demo h5{
+			color:#554433;
+			text-align:center;
+			padding:5rem 0;
+			margin:10px;
+			font-weight:500;
+		}
+	</style>
+}
+<div id="app">
+	<div class="home-demo">
+		<div class="owl-carousel owl-theme">
+			<div class="item" v-for="item in carouselDTOes">
+				<h3>{{item.caption}}</h3>
+				<img v-bind:src="item.src"/>
+			</div>
+		</div>
+	</div>
+</div>
+@section Scripts
+{
+	<script src="~/lib/axios/axios.min.js"></script>
+	<script src="https://unpkg.com/vue@3.2.29/dist/vue.global.js"></script>
+	<script src="~/lib/owlcarousel2/owl.carousel.min.js"></script>
+	<script>
+		var vueApp={
+			data(){
+				return{
+					carouselDTOes:[],
+				};
+			},
+			mounted:function(){
+				let _this=this;	
+				_this.getCarousels();
+			},
+			methods:
+			{
+				getCarousels:function(){
+					let _this=this;
+					axios.get("https://localhost:7040/Home/GetCarousels").then(response=>{
+						this.carouselDTOes=response.data;
+					})
+				}
+			}
+		};
+		var app=Vue.createApp(vueApp).mount("#app");
+		$(document).ready(function(){
+			var owl=$(".owl-carousel");
+			owl.owlCarousel({
+				items:3,
+				margin:10,
+				loop:true,
+				nav:true
+			})
+		})
+	</script>
+}
